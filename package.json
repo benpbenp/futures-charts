@@ -1,0 +1,14 @@
+{
+  "name": "futurescharts",
+  "version": "0.0.1",
+  "description": "Animated charts showing historical futures pricing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ben Pietravalle",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "express": "~4.11.2"
+  }
+}

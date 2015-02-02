@@ -1,20 +1,3 @@
-<!doctype html>
-<html>
-<head>
-<meta http-equiv="content-type" content="text/html; charset=UTF8">
-<title></title>
-</head>
-<body>
-<div id="container">
-
-</div>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore.js"></script>
-
-<script src="react/react-with-addons.js"></script>
-<script src="react/JSXTransformer.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.13/d3.js"></script>
-<script type="text/jsx">
 var Chart = React.createClass({
     render : function(){
         return (
@@ -39,7 +22,6 @@ var Chart = React.createClass({
             );
     }
 });
-*/
 var DataSeries = React.createClass({
     getDefaultProps: function(){
         return {
@@ -69,7 +51,6 @@ var DataSeries = React.createClass({
             );
     }
 });
-/*
 var BarChart = React.createClass({
     render: function() {
         return (
@@ -158,20 +139,83 @@ var LineChart = React.createClass({
     }
 });
 
+var MovingLineChart = React.createClass({
+
+    getDefaultProps: function() {
+        return {
+            width: 600,
+            height: 300
+        }
+    },
+
+    getInitialState: function() {
+        return {
+            counter: 0
+        };
+    },
+
+    animate: function(){
+        this.state.counter++;
+        d3.select(this.getDOMNode()).select('path').transition().attr('d', this.props.paths[this.state.counter % this.props.paths.length]);
+    },
+    render: function() {
+        var data = this.props.data,
+        size = { width: this.props.width, height: this.props.height };
+        var max = _.chain(data[0],data[1], data[2])
+            .zip()
+            .map(function(values) {
+                return _.reduce(values, function(memo, value) { return Math.max(memo, value.y); }, 0);
+            })
+            .max()
+            .value();
+            
+             
+        var xScale = d3.scale.linear()
+            .domain([0, 6])
+            .range([0,this.props.width]);
+        
+        var yScale = d3.scale.linear()
+            .domain([0,max])
+            .range([this.props.height,0]);
+
+        var paths = [];
+        for(var i =0; i < data.length; i++){
+            paths.push(
+                    d3.svg.line()
+                        .x(function(d) { return xScale(d.x); })
+                        .y(function(d) { return yScale(d.y); })
+                        .interpolate(this.props.interpolate)(data[i])
+
+            );
+        }
+        this.props.paths = paths;
+        return (
+                <Chart width={this.props.width} height={this.props.height}>
+                    <DataSeries data={data[this.state.counter]} size={size} xScale={xScale} yScale={yScale}  ref="series1" color="cornflowerblue"/>
+                </Chart>
+            );
+    }
+
+});
+
 var data = { 
       series1: [ { 'x': 0, 'y': 20 }, { 'x': 1, 'y': 30 }, { 'x': 2, 'y': 10 }, { 'x': 3, 'y': 5 }, { 'x': 4, 'y': 8 }, { 'x': 5, 'y': 15 }, { 'x': 6, 'y': 10 } ],
         series2: [ { x: 0, y: 8 }, { x: 1, y: 5 }, { x: 2, y: 20 }, { x: 3, y: 12 }, { x: 4, y: 4 }, { x: 5, y: 6 }, { x: 6, y: 2 } ],
           series3: [ { x: 0, y: 0 }, { x: 1, y: 5 }, { x: 2, y: 8 }, { x: 3, y: 2 }, { x: 4, y: 6 }, { x: 5, y: 4 }, { x: 6, y: 2 } ]          
 };
-React.renderComponent(
-    <LineChart data={data}/>,
+
+var timedata = [
+        
+      [ { 'x': 0, 'y': 20 }, { 'x': 1, 'y': 30 }, { 'x': 2, 'y': 10 }, { 'x': 3, 'y': 5 }, { 'x': 4, 'y': 8 }, { 'x': 5, 'y': 15 }, { 'x': 6, 'y': 10 } ],
+      [ { x: 0, y: 8 }, { x: 1, y: 5 }, { x: 2, y: 20 }, { x: 3, y: 12 }, { x: 4, y: 4 }, { x: 5, y: 6 }, { x: 6, y: 2 } ],
+      [ { x: 0, y: 0 }, { x: 1, y: 5 }, { x: 2, y: 8 }, { x: 3, y: 2 }, { x: 4, y: 6 }, { x: 5, y: 4 }, { x: 6, y: 2 } ]          
+
+];
+var linechart = React.renderComponent(
+    <MovingLineChart data={timedata}/>,
     document.getElementById('container')
     );
 
-//React.renderComponent(
- //   <BarChart width={600} height={300} />,
- //   document.getElementById('container')
- //   );
-</script>
-</body>
-</html>
+d3.select('button').on('click', function(){
+    linechart.animate(); 
+});
