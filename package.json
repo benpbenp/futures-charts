@@ -4,11 +4,29 @@
   "description": "Animated charts showing historical futures pricing",
   "main": "index.js",
   "scripts": {
+    "gulp": "gulp",
+    "gulp browserify": "gulp browserify",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ben Pietravalle",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "express": "~4.11.2"
+    "express": "~4.11.2",
+    "underscore": "~1.8.2",
+    "node-jsx": "~0.12.4",
+    "browserify": "~9.0.3",
+    "gulp-browserify": "~0.5.1",
+    "d3": "~3.5.5",
+    "fibers": "~1.0.5",
+    "gulp-rename": "~1.2.0",
+    "react-router": "~0.12.4",
+    "react": "~0.12.2",
+    "request": "~2.53.0"
+  },
+  "devDependencies": {
+    "gulp": "~3.8.11",
+    "reactify": "~1.0.0",
+    "gulp-rename": "~1.2.0",
+    "gulp-browserify": "~0.5.1"
   }
 }
