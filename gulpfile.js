@@ -17,4 +17,8 @@ gulp.task('browserify', function(){
 
 });
 
+gulp.task('watch', function() {
+  gulp.watch('./react/**', ['browserify'])
+});
+
 gulp.task('default', ['browserify']);

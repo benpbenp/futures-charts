@@ -6,6 +6,10 @@ require('node-jsx').install({extension: '.jsx'});
 var React = require('react');
 var App = require('../react/App.jsx');
 
+var api = require('./api.js');
+
+var async = require('async');
+
 const fs = require('fs');
 var handlebars = require('handlebars');
 
@@ -20,7 +24,15 @@ app.use('/static',express.static(path.resolve(__dirname+ '/../static/')));
 
 app.use('/output', express.static(path.resolve(__dirname+ '/../output/')));
 
+app.get('/data/:commodity', function(req, res) {
+    api.getData(req.params.commodity, {'most_recent' : false, 'callback': function(result) { res.send(result);}});
 
+});
+app.get('/data/:commodity/:start/:end', function(req, res) {
+    
+    res.send(res, api.getData(req.params.commodity, {'start' : req.params.start, 'end' : req.params.end}));
+
+});
 app.get('/', function(req, res){
     var path = url.parse(req.url).pathname;
     var content = React.renderTo

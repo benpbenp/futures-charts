@@ -22,7 +22,7 @@ var DataSeries = React.createClass({
             .x(function(d) { return xScale(d.x); })
             .y(function(d) { return yScale(d.y); })
             .interpolate(this.props.interpolate);
-        
+        console.log(path(this.props.data));
         return (
             <Line path={path(this.props.data)} color={this.props.color} />
             )
